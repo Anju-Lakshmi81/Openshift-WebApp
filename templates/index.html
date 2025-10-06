@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    .metric { font-size: 2em; margin: 20px; }
+  </style>
+</head>
+<body>
+  <h1>System Metrics Dashboard</h1>
+  <div class="metric">CPU Usage: <span id="cpu">--</span>%</div>
+  <div class="metric">Memory Usage: <span id="memory">--</span>%</div>
+
+  <script>
+    async function updateMetrics() {
+      const response = await fetch('/metrics');
+      const data = await response.json();
+      document.getElementById('cpu').textContent = data.cpu;
+      document.getElementById('memory').textContent = data.memory;
+    }
+    setInterval(updateMetrics, 2000); // refresh every 2 seconds
+    updateMetrics();
+  </script>
+</body>
+</html>
