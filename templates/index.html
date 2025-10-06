@@ -36,16 +36,34 @@
   <div class="metric" id="memory">Memory Usage: --%</div>
 
   <script>
+    // -------------------------------
+    // Replace TOKEN_VALUE with the actual token you set in the OpenShift secret
+    const METRICS_TOKEN = "DevOps_Zenith"; // or dynamically inject via template/env if needed
+
     async function updateMetrics() {
-      const response = await fetch('/metrics');
-      const data = await response.json();
+      try {
+        const response = await fetch('/metrics', {
+          headers: {
+            'Authorization': `Bearer ${METRICS_TOKEN}`
+          }
+        });
 
-      document.getElementById('cpu').textContent = `CPU Usage: ${data.cpu}%`;
-      document.getElementById('memory').textContent = `Memory Usage: ${data.memory}%`;
+        if (!response.ok) {
+          console.error('Failed to fetch metrics:', response.status);
+          return;
+        }
 
-      // Change background color based on usage
-      document.getElementById('cpu').style.background = `hsl(${(100 - data.cpu) * 1.2}, 80%, 50%)`;
-      document.getElementById('memory').style.background = `hsl(${(100 - data.memory) * 1.2}, 80%, 50%)`;
+        const data = await response.json();
+
+        document.getElementById('cpu').textContent = `CPU Usage: ${data.cpu}%`;
+        document.getElementById('memory').textContent = `Memory Usage: ${data.memory}%`;
+
+        // Change background color based on usage
+        document.getElementById('cpu').style.background = `hsl(${(100 - data.cpu) * 1.2}, 80%, 50%)`;
+        document.getElementById('memory').style.background = `hsl(${(100 - data.memory) * 1.2}, 80%, 50%)`;
+      } catch (err) {
+        console.error('Error updating metrics:', err);
+      }
     }
 
     setInterval(updateMetrics, 2000); // refresh every 2 seconds
