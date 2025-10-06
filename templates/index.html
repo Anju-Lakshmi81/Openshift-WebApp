@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <title>System Metrics Dashboard</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-    .metric { font-size: 2em; margin: 20px; }
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      margin-top: 50px; 
+      background: #f0f4f8;
+      color: #333;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .metric {
+      font-size: 2em;
+      margin: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      display: inline-block;
+      color: white;
+    }
+    #cpu {
+      background: #e74c3c; /* red */
+    }
+    #memory {
+      background: #3498db; /* blue */
+    }
   </style>
 </head>
 <body>
   <h1>System Metrics Dashboard</h1>
-  <div class="metric">CPU Usage: <span id="cpu">--</span>%</div>
-  <div class="metric">Memory Usage: <span id="memory">--</span>%</div>
+  <div class="metric" id="cpu">CPU Usage: --%</div>
+  <div class="metric" id="memory">Memory Usage: --%</div>
 
   <script>
     async function updateMetrics() {
       const response = await fetch('/metrics');
       const data = await response.json();
-      document.getElementById('cpu').textContent = data.cpu;
-      document.getElementById('memory').textContent = data.memory;
+
+      document.getElementById('cpu').textContent = `CPU Usage: ${data.cpu}%`;
+      document.getElementById('memory').textContent = `Memory Usage: ${data.memory}%`;
+
+      // Change background color based on usage
+      document.getElementById('cpu').style.background = `hsl(${(100 - data.cpu) * 1.2}, 80%, 50%)`;
+      document.getElementById('memory').style.background = `hsl(${(100 - data.memory) * 1.2}, 80%, 50%)`;
     }
+
     setInterval(updateMetrics, 2000); // refresh every 2 seconds
     updateMetrics();
   </script>
 </body>
 </html>
+
