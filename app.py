@@ -36,6 +36,14 @@ def metrics():
 def dashboard():
     return render_template("index.html")
 
+
+# -------------------------------
+# Health Check Endpoint for K8s/OpenShift probes
+# -------------------------------
+@app.route("/healthz")
+def healthz():
+    return "OK", 200
+
 # -------------------------------
 # Main Application
 # -------------------------------
